@@ -9,7 +9,7 @@ const Flashcard = ({ flashcard, onToggleStar }) => {
   };
 
   return (
-    <div className="relative w-full h-64" style={{ perspective: '1000px' }}>
+    <div className="relative w-full h-[22rem] sm:h-80" style={{ perspective: '1000px' }}>
       <div
         className={`relative w-full h-full transition-transform duration-500 transform-gpu cursor-pointer`}
         style={{
@@ -21,7 +21,7 @@ const Flashcard = ({ flashcard, onToggleStar }) => {
         
         {/* Front of the card (Question) */}
         <div
-          className="absolute inset-0 w-full h-full bg-white/80 backdrop-blur-xl border-2 border-slate-200/60 rounded-2xl shadow-xl shadow-slate-200/50 p-8 flex flex-col justify-between"
+          className="absolute inset-0 w-full h-full overflow-hidden bg-white/80 backdrop-blur-xl border-2 border-slate-200/60 rounded-2xl shadow-xl shadow-slate-200/50 p-4 sm:p-8 flex flex-col justify-between"
           style={{
             backfaceVisibility: 'hidden',
             WebkitBackfaceVisibility: 'hidden'
@@ -29,7 +29,7 @@ const Flashcard = ({ flashcard, onToggleStar }) => {
         >
           {/* Header: Difficulty & Star Button */}
           <div className="flex justify-between items-start">
-            <div className="bg-slate-100 text-[10px] text-slate-600 rounded px-4 py-1 uppercase font-bold tracking-wider">
+            <div className="max-w-[70%] truncate bg-slate-100 text-[10px] text-slate-600 rounded px-3 sm:px-4 py-1 uppercase font-bold tracking-wider">
               {flashcard?.difficulty || 'Normal'}
             </div>
             <button
@@ -52,8 +52,8 @@ const Flashcard = ({ flashcard, onToggleStar }) => {
           </div>
 
           {/* Question Content */}
-          <div className="flex-1 flex items-center justify-center px-4 py-6">
-            <p className="text-lg font-semibold text-slate-900 text-center leading-relaxed">
+          <div className="flex-1 flex items-center justify-center overflow-y-auto px-1 sm:px-4 py-5 sm:py-6">
+            <p className="text-base sm:text-lg font-semibold text-slate-900 text-center leading-relaxed break-words">
               {flashcard.question}
             </p>
           </div>
@@ -68,7 +68,7 @@ const Flashcard = ({ flashcard, onToggleStar }) => {
 
         {/* Back of the card (Answer) */}
         <div
-          className="absolute inset-0 w-full h-full bg-linear-to-br from-emerald-500 to-teal-500 border-2 border-emerald-400/60 rounded-2xl shadow-xl shadow-emerald-500/20 p-8 flex flex-col justify-between"
+          className="absolute inset-0 w-full h-full overflow-hidden bg-linear-to-br from-emerald-500 to-teal-500 border-2 border-emerald-400/60 rounded-2xl shadow-xl shadow-emerald-500/20 p-4 sm:p-8 flex flex-col justify-between"
           style={{
             backfaceVisibility: 'hidden',
             WebkitBackfaceVisibility: 'hidden',
@@ -97,8 +97,8 @@ const Flashcard = ({ flashcard, onToggleStar }) => {
           </div>
 
           {/* Answer Content */}
-          <div className="flex-1 flex items-center justify-center px-4 py-6">
-            <p className="text-base text-white text-center leading-relaxed font-medium">
+          <div className="flex-1 flex items-center justify-center overflow-y-auto px-1 sm:px-4 py-5 sm:py-6">
+            <p className="text-sm sm:text-base text-white text-center leading-relaxed font-medium break-words">
               {flashcard.answer}
             </p>
           </div>

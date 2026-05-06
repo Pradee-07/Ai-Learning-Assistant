@@ -117,7 +117,7 @@ const QuizManager = ({ documentId }) => {
     }
 
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
         {quizzes.map((quiz, index) => (
           <QuizCard 
             key={quiz._id} 
@@ -132,7 +132,7 @@ const QuizManager = ({ documentId }) => {
 
   return (
     <>
-      <div className="bg-white/80 backdrop-blur-xl border border-slate-200/60 rounded-3xl shadow-xl shadow-slate-200/50 p-8">
+      <div className="bg-white/80 backdrop-blur-xl border border-slate-200/60 rounded-2xl sm:rounded-3xl shadow-xl shadow-slate-200/50 p-4 sm:p-8">
         
         {quizzes.length > 0 && !loading && (
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
@@ -147,7 +147,7 @@ const QuizManager = ({ documentId }) => {
             
             <button 
               onClick={() => setIsGenerateModalOpen(true)}
-              className="group inline-flex items-center gap-2 px-5 h-11 bg-linear-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white text-sm font-medium rounded-xl transition-all duration-200 shadow-lg shadow-cyan-500/20 active:scale-95 whitespace-nowrap"
+              className="group inline-flex w-full sm:w-auto items-center justify-center gap-2 px-5 h-11 bg-linear-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white text-sm font-medium rounded-xl transition-all duration-200 shadow-lg shadow-cyan-500/20 active:scale-95 whitespace-nowrap"
             >
               <Plus className="w-4 h-4" strokeWidth={2.5} />
               Generate New Quiz
@@ -186,7 +186,7 @@ const QuizManager = ({ documentId }) => {
             </div>
           </div>
           
-          <div className="flex items-center justify-end gap-3 px-6 py-4 bg-slate-50/50 border-t border-slate-200/60 rounded-b-3xl">
+          <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 px-4 sm:px-6 py-4 bg-slate-50/50 border-t border-slate-200/60 rounded-b-2xl sm:rounded-b-3xl">
             <button
               type="button"
               onClick={() => setIsGenerateModalOpen(false)}
@@ -229,7 +229,7 @@ const QuizManager = ({ documentId }) => {
               {selectedQuiz?.title || 'Quiz'}
             </span>? This action cannot be undone.
           </p>
-          <div className="flex items-center justify-end gap-3 pt-2">
+          <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 pt-2">
             <button
               type="button"
               onClick={() => setIsDeleteModalOpen(false)}

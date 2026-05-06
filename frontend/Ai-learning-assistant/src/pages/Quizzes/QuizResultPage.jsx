@@ -117,11 +117,11 @@ const QuizResultPage = () => {
   };
 
   const getScoreMessage = (score) => {
-    if (score >= 90) return 'Outstanding! 🌟';
-    if (score >= 80) return 'Great job! 🎯';
-    if (score >= 70) return 'Good work! 👍';
-    if (score >= 60) return 'Not bad! 📚';
-    return 'Keep practicing! 💪';
+    if (score >= 90) return 'Outstanding!';
+    if (score >= 80) return 'Great job!';
+    if (score >= 70) return 'Good work!';
+    if (score >= 60) return 'Not bad!';
+    return 'Keep practicing!';
   };
 
   const resultHeaderTitle = quizData.title ? `${quizData.title} Results` : 'Quiz Results';
@@ -144,7 +144,7 @@ const QuizResultPage = () => {
       <div className="max-w-4xl mx-auto space-y-8">
         
         {/* Score Card */}
-        <div className="bg-white border border-slate-200 rounded-3xl shadow-lg shadow-slate-200/30 p-8 sm:p-12">
+        <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl shadow-lg shadow-slate-200/30 p-5 sm:p-12">
           <div className="text-center space-y-6">
             
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-linear-to-br from-emerald-50 to-teal-50 border border-emerald-100 shadow-inner">
@@ -155,10 +155,10 @@ const QuizResultPage = () => {
               <p className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2">
                 Your Score
               </p>
-              <div className={`inline-block text-6xl font-black bg-linear-to-r ${getScoreColor(score)} bg-clip-text text-transparent mb-4 drop-shadow-sm`}>
+              <div className={`inline-block text-5xl sm:text-6xl font-black bg-linear-to-r ${getScoreColor(score)} bg-clip-text text-transparent mb-4 drop-shadow-sm`}>
                 {score}%
               </div>
-              <p className="text-xl font-medium text-slate-700">
+              <p className="text-lg sm:text-xl font-medium text-slate-700">
                 {getScoreMessage(score)}
               </p>
             </div>
@@ -206,9 +206,9 @@ const QuizResultPage = () => {
             return (
               <div 
                 key={index} 
-                className="bg-white border border-slate-200 rounded-2xl p-6 shadow-lg shadow-slate-200/20 mb-6"
+                className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-6 shadow-lg shadow-slate-200/20 mb-6"
               >
-                <div className="flex items-start justify-between gap-4 mb-4">
+                <div className="flex items-start justify-between gap-3 sm:gap-4 mb-4">
                   <div className="flex-1">
                     {/* Question Badge */}
                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-50 border border-slate-200 rounded-lg mb-3">
@@ -217,7 +217,7 @@ const QuizResultPage = () => {
                       </span>
                     </div>
                     {/* Question Text */}
-                    <h4 className="text-lg font-semibold text-slate-900 leading-relaxed">
+                    <h4 className="text-base sm:text-lg font-semibold text-slate-900 leading-relaxed break-words">
                       {result.question}
                     </h4>
                   </div>
@@ -254,7 +254,7 @@ const QuizResultPage = () => {
                             : 'bg-slate-50 border-slate-200'
                         }`}
                       >
-                        <div className="flex items-center justify-between gap-4">
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
                           <span className={`text-sm font-medium ${
                             isCorrectOption 
                               ? 'text-emerald-900' 
@@ -266,7 +266,7 @@ const QuizResultPage = () => {
                           </span>
 
                           {/* Indicators */}
-                          <div className="flex items-center gap-2 shrink-0">
+                          <div className="flex flex-wrap items-center gap-2 shrink-0">
                             {isCorrectOption && (
                               <span className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-100 border border-emerald-200 rounded-md text-xs font-bold text-emerald-700">
                                 <CheckCircle2 className="w-3.5 h-3.5" strokeWidth={2.5} />
@@ -311,8 +311,8 @@ const QuizResultPage = () => {
 
         {/* Action Button */}
         <div className="mt-8 flex justify-center">
-          <Link to={`/documents/${quizData.document._id}`}>
-            <button className="group relative px-8 h-12 bg-linear-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold rounded-xl overflow-hidden transition-all duration-200 shadow-lg shadow-emerald-500/25 active:scale-95">
+          <Link to={`/documents/${quizData.document._id}`} className="w-full sm:w-auto">
+            <button className="group relative w-full sm:w-auto px-8 h-12 bg-linear-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold rounded-xl overflow-hidden transition-all duration-200 shadow-lg shadow-emerald-500/25 active:scale-95">
               <span className="relative z-10 flex items-center gap-2">
                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200" strokeWidth={2.5} />
                 Return to Document

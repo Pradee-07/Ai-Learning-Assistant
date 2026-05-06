@@ -62,7 +62,7 @@ const FlashcardsListPage = () => {
   return (
     <div className="pb-12">
       <PageHeader title="My Flashcards" />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+      <div className="max-w-7xl mx-auto mt-6 sm:mt-8">
         {renderContent()}
       </div>
     </div>

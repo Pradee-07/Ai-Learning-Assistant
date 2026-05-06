@@ -6,16 +6,9 @@ import moment from 'moment';
 const QuizCard = ({ quiz, index, onDelete }) => {
   const displayLabel = `Quiz ${index + 1}`;
   const cardTitle = quiz.title ? quiz.title : `Untitled Quiz`;
-  const totalQuestions = quiz.totalQuestions || quiz.questions?.length || 0;
-  const correctAnswers = quiz.userAnswers?.filter((answer) => answer.isCorrect).length || 0;
-  const fallbackScore = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
-  const parsedScore = Number(quiz.score);
-  const cardScore = quiz.userAnswers?.length ? fallbackScore : (!Number.isNaN(parsedScore) ? parsedScore : 0);
   const hasAttempted = Boolean(quiz.completedAt || quiz.userAnswers?.length);
-  const scoreLabel = hasAttempted ? `${cardScore}%` : 'Not attempted';
-
   return (
-    <div className="group relative bg-white/60 backdrop-blur-sm border border-slate-200/80 rounded-2xl p-6 flex flex-col h-full hover:border-emerald-300 hover:shadow-xl hover:shadow-emerald-500/10 transition-all duration-300 min-h-80">
+    <div className="group relative bg-white/60 backdrop-blur-sm border border-slate-200/80 rounded-2xl p-4 sm:p-6 flex flex-col h-full hover:border-emerald-300 hover:shadow-xl hover:shadow-emerald-500/10 transition-all duration-300 min-h-64 sm:min-h-80">
       
       {/* Delete Button */}
       <button
@@ -23,7 +16,7 @@ const QuizCard = ({ quiz, index, onDelete }) => {
           e.stopPropagation();
           onDelete(quiz);
         }}
-        className="absolute top-4 right-4 p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 z-10"
+        className="absolute top-4 right-4 p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-200 z-10"
       >
         <Trash2 className="w-4 h-4" strokeWidth={2} />
       </button>

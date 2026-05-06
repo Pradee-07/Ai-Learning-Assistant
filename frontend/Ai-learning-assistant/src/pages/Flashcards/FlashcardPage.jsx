@@ -94,7 +94,7 @@ const FlashcardPage = () => {
         )
       );
       toast.success("Flashcard starred status updated!");
-    } catch (error) {
+    } catch {
       toast.error("Failed to update star status.");
     }
   };
@@ -141,10 +141,10 @@ const FlashcardPage = () => {
     const currentCard = flashcards[currentCardIndex];
 
     return (
-      <div className="flex flex-col items-center space-y-8 mt-8">
+      <div className="flex flex-col items-center space-y-6 sm:space-y-8 mt-6 sm:mt-8">
         
         {/* Flashcard Container */}
-        <div className="w-full max-w-xl perspective-1000">
+        <div className="w-full max-w-2xl perspective-1000">
           <Flashcard 
             flashcard={currentCard} 
             onToggleStar={handleToggleStar} 
@@ -152,14 +152,14 @@ const FlashcardPage = () => {
         </div>
 
         {/* Navigation Controls */}
-        <div className="flex items-center gap-6 bg-white/80 backdrop-blur-xl border border-slate-200 px-6 py-4 rounded-2xl shadow-sm">
+        <div className="grid w-full grid-cols-[1fr_auto_1fr] items-center gap-2 sm:flex sm:w-auto sm:gap-6 bg-white/80 backdrop-blur-xl border border-slate-200 px-3 sm:px-6 py-3 sm:py-4 rounded-2xl shadow-sm">
           <button
             onClick={handlePrevCard}
             disabled={flashcards.length <= 1}
-            className="group flex items-center gap-2 px-4 h-10 bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium rounded-xl transition-all duration-200 disabled:opacity-50"
+            className="group flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-4 h-10 bg-slate-50 hover:bg-slate-100 text-slate-700 text-sm sm:text-base font-medium rounded-xl transition-all duration-200 disabled:opacity-50"
           >
             <ChevronLeft size={18} className="group-hover:-translate-x-0.5 transition-transform" /> 
-            Previous
+            <span className="hidden sm:inline">Previous</span>
           </button>
           
           <span className="text-sm font-semibold text-slate-500 bg-slate-100 px-4 py-1.5 rounded-lg">
@@ -169,9 +169,9 @@ const FlashcardPage = () => {
           <button
             onClick={handleNextCard}
             disabled={flashcards.length <= 1}
-            className="group flex items-center gap-2 px-4 h-10 bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium rounded-xl transition-all duration-200 disabled:opacity-50"
+            className="group flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-4 h-10 bg-slate-50 hover:bg-slate-100 text-slate-700 text-sm sm:text-base font-medium rounded-xl transition-all duration-200 disabled:opacity-50"
           >
-            Next 
+            <span className="hidden sm:inline">Next</span>
             <ChevronRight size={18} className="group-hover:translate-x-0.5 transition-transform" />
           </button>
         </div>
@@ -189,17 +189,17 @@ const FlashcardPage = () => {
         Back to Document
       </Link>
 
-      <div className="mt-6 bg-white/80 backdrop-blur-xl border border-slate-200/60 rounded-3xl shadow-xl shadow-slate-200/50 p-8">
+      <div className="mt-6 bg-white/80 backdrop-blur-xl border border-slate-200/60 rounded-2xl sm:rounded-3xl shadow-xl shadow-slate-200/50 p-4 sm:p-8">
         <PageHeader
           title="Flashcards"
           subtitle={flashcards.length > 0 ? `${flashcards.length} flashcards available` : 'Generate flashcards from your document to start learning.'}
         >
           {!loading && flashcards.length > 0 && (
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+            <div className="flex w-full flex-col sm:w-auto sm:flex-row items-stretch sm:items-center gap-3">
               <button 
                 onClick={() => setIsDeleteModalOpen(true)}
                 disabled={deleting || generating}
-                className="inline-flex items-center gap-2 px-4 h-11 bg-rose-50 hover:bg-rose-100 text-rose-600 font-medium rounded-xl transition-all duration-200 disabled:opacity-50"
+                className="inline-flex items-center justify-center gap-2 px-4 h-11 bg-rose-50 hover:bg-rose-100 text-rose-600 font-medium rounded-xl transition-all duration-200 disabled:opacity-50"
               >
                 <Trash2 size={16} />
                 <span>Delete Set</span>
@@ -208,7 +208,7 @@ const FlashcardPage = () => {
               <button 
                 onClick={handleGenerateFlashcards} 
                 disabled={generating}
-                className={`inline-flex items-center gap-2 px-5 h-11 font-medium rounded-xl transition-all duration-200 active:scale-95 disabled:opacity-50 ${
+                className={`inline-flex items-center justify-center gap-2 px-5 h-11 font-medium rounded-xl transition-all duration-200 active:scale-95 disabled:opacity-50 ${
                   flashcards.length > 0 
                     ? 'bg-linear-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white shadow-lg shadow-cyan-500/20' 
                     : 'bg-linear-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-emerald-500/25'
@@ -249,7 +249,7 @@ const FlashcardPage = () => {
             </p>
           </div>
           
-          <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-slate-100">
+          <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 mt-6 pt-4 border-t border-slate-100">
             <button
               type="button"
               onClick={() => setIsDeleteModalOpen(false)}

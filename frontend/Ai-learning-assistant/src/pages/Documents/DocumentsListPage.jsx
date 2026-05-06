@@ -115,7 +115,7 @@ const DocumentListPage = () => {
 
     if (documents.length === 0) {
       return (
-        <div className="text-center py-20 bg-white/50 backdrop-blur-sm border border-slate-200/60 border-dashed rounded-3xl">
+        <div className="text-center py-14 sm:py-20 px-4 bg-white/50 backdrop-blur-sm border border-slate-200/60 border-dashed rounded-2xl sm:rounded-3xl">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white shadow-sm mb-4">
             <FileText className="w-8 h-8 text-slate-400" />
           </div>
@@ -147,11 +147,11 @@ const DocumentListPage = () => {
       {/* Subtle background pattern */}
       <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] bg-[size:16px_16px] opacity-30 pointer-events-none"></div>
 
-      <div className="relative max-w-7xl mx-auto p-6">
+      <div className="relative max-w-7xl mx-auto p-4 sm:p-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-10">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900 tracking-tight mb-2">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8 sm:mb-10">
+          <div className="min-w-0">
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mb-2">
               My Documents
             </h1>
             <p className="text-slate-500 text-sm font-medium">
@@ -160,7 +160,7 @@ const DocumentListPage = () => {
           </div>
           
           {documents.length > 0 && (
-            <Button onClick={() => setIsUploadModalOpen(true)}>
+            <Button onClick={() => setIsUploadModalOpen(true)} className="w-full sm:w-auto">
               <Plus className="w-5 h-5" strokeWidth={2.5} />
               Upload Document
             </Button>
@@ -173,7 +173,7 @@ const DocumentListPage = () => {
       {/* Upload Modal */}
       {isUploadModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-          <div className="relative w-full max-w-lg bg-white/95 backdrop-blur-xl border border-slate-200/60 rounded-3xl shadow-2xl shadow-slate-900/20 p-8 overflow-hidden">
+          <div className="relative w-full max-w-lg max-h-[calc(100vh-2rem)] overflow-y-auto bg-white/95 backdrop-blur-xl border border-slate-200/60 rounded-2xl sm:rounded-3xl shadow-2xl shadow-slate-900/20 p-5 sm:p-8">
             
             {/* Close button */}
             <button
@@ -248,7 +248,7 @@ const DocumentListPage = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-3 pt-2">
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <button
                   type="button"
                   onClick={closeUploadModal}
@@ -281,7 +281,7 @@ const DocumentListPage = () => {
       {/* Delete Confirmation Modal */}
       {isDeleteModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-          <div className="relative w-full max-w-md bg-white/95 backdrop-blur-xl border border-slate-200/60 rounded-2xl shadow-2xl p-8">
+          <div className="relative w-full max-w-md bg-white/95 backdrop-blur-xl border border-slate-200/60 rounded-2xl shadow-2xl p-5 sm:p-8">
             
             {/* Close button */}
             <button
@@ -312,7 +312,7 @@ const DocumentListPage = () => {
             </p>
 
             {/* Action Buttons */}
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <button
                 type="button"
                 onClick={() => setIsDeleteModalOpen(false)}

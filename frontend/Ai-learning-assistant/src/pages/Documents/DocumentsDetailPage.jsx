@@ -68,7 +68,7 @@ const DocumentDetailPage = () => {
 
     return (
       <div className="bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
-        <div className="flex items-center justify-between p-4 bg-gray-50 border-b border-gray-300">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-gray-50 border-b border-gray-300">
           <span className="text-sm font-medium text-gray-700">Document Viewer</span>
           <a
             href={pdfUrl}
@@ -84,7 +84,7 @@ const DocumentDetailPage = () => {
           {/* ✅ UPDATED: Using Google Docs Viewer to bypass browser PDF bugs */}
           <iframe
             src={`https://docs.google.com/gview?url=${encodeURIComponent(pdfUrl)}&embedded=true`}
-            className="w-full h-[70vh] bg-white rounded border border-gray-200"
+            className="w-full h-[60vh] sm:h-[70vh] bg-white rounded border border-gray-200"
             title="PDF Viewer"
             frameBorder="0"
           />
@@ -126,7 +126,7 @@ const DocumentDetailPage = () => {
   }
 
   return (
-    <div>
+    <div className="min-w-0">
       <div className="mb-4">
         <Link to="/documents" className="inline-flex items-center gap-2 text-sm text-neutral-600 hover:text-neutral-900 transition-colors">
           <ArrowLeft size={16} />

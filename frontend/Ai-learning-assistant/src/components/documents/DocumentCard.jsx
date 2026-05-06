@@ -33,7 +33,7 @@ const DocumentCard = ({ document, onDelete }) => {
 
   return (
     <div
-      className="group relative bg-white/80 backdrop-blur-xl border border-slate-200/60 rounded-2xl p-5 hover:border-slate-300/60 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 cursor-pointer flex flex-col h-full"
+      className="group relative bg-white/80 backdrop-blur-xl border border-slate-200/60 rounded-2xl p-4 sm:p-5 hover:border-slate-300/60 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 cursor-pointer flex flex-col h-full"
       onClick={handleNavigate}
     >
       {/* Header Section */}
@@ -43,7 +43,7 @@ const DocumentCard = ({ document, onDelete }) => {
         </div>
         <button
           onClick={handleDelete}
-          className="opacity-0 group-hover:opacity-100 w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all duration-200"
+          className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all duration-200"
         >
           <Trash2 className="w-4 h-4" strokeWidth={2} />
         </button>
@@ -71,7 +71,7 @@ const DocumentCard = ({ document, onDelete }) => {
       </div>
 
       {/* Stats Section */}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
         {/* If your API passes arrays instead of counts, change this to: (document.flashcardCount ?? document.flashcards?.length) !== undefined */}
         {document.flashcardCount !== undefined && (
           <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-purple-50 rounded-lg">

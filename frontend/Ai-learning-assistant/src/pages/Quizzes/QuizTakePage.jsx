@@ -92,7 +92,7 @@ const QuizTakePage = () => {
   }
 
   const currentQuestion = quiz.questions[currentQuestionIndex];
-  const isAnswered = selectedAnswers.hasOwnProperty(currentQuestion._id);
+  const isAnswered = Object.prototype.hasOwnProperty.call(selectedAnswers, currentQuestion._id);
   const answeredCount = Object.keys(selectedAnswers).length;
 
   return (
@@ -119,7 +119,7 @@ const QuizTakePage = () => {
         </div>
 
         {/* Question Card */}
-        <div className="bg-white/80 backdrop-blur-xl border-2 border-slate-200 rounded-2xl shadow-xl shadow-slate-200/50 p-8 mb-8">
+        <div className="bg-white/80 backdrop-blur-xl border-2 border-slate-200 rounded-2xl shadow-xl shadow-slate-200/50 p-4 sm:p-8 mb-6 sm:mb-8">
           
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-linear-to-r from-emerald-50 to-teal-50 border border-emerald-100 rounded-xl mb-6">
             <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
@@ -128,7 +128,7 @@ const QuizTakePage = () => {
             </span>
           </div>
           
-          <h3 className="text-lg font-semibold text-slate-900 mb-6 leading-relaxed">
+          <h3 className="text-base sm:text-lg font-semibold text-slate-900 mb-6 leading-relaxed break-words">
             {currentQuestion.question}
           </h3>
 
@@ -139,7 +139,7 @@ const QuizTakePage = () => {
               return (
                 <label
                   key={index}
-                  className={`group relative flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
+                  className={`group relative flex items-start sm:items-center p-3 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
                     isSelected
                       ? 'border-emerald-500 bg-emerald-50 shadow-lg shadow-emerald-500/10'
                       : 'border-slate-200 bg-slate-50/50 hover:border-slate-300 hover:bg-slate-50'
@@ -168,7 +168,7 @@ const QuizTakePage = () => {
                   </div>
 
                   {/* Option Text */}
-                  <span className={`ml-4 text-sm font-medium transition-colors duration-200 ${
+                  <span className={`ml-3 sm:ml-4 min-w-0 flex-1 text-sm font-medium break-words transition-colors duration-200 ${
                     isSelected ? 'text-emerald-900' : 'text-slate-700 group-hover:text-slate-900'
                   }`}>
                     {option}
@@ -177,7 +177,7 @@ const QuizTakePage = () => {
                   {/* Selected Checkmark */}
                   {isSelected && (
                     <CheckCircle2
-                      className="ml-auto w-5 h-5 text-emerald-500"
+                      className="ml-2 w-5 h-5 shrink-0 text-emerald-500"
                       strokeWidth={2.5}
                     />
                   )}
@@ -188,11 +188,11 @@ const QuizTakePage = () => {
         </div>
 
         {/* Navigation Buttons */}
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
           <button
             onClick={handlePreviousQuestion}
             disabled={currentQuestionIndex === 0 || submitting}
-            className="group flex items-center gap-2 px-5 h-11 bg-white border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 font-medium rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="group flex w-full sm:w-auto items-center justify-center gap-2 px-5 h-11 bg-white border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 font-medium rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform duration-200" strokeWidth={2.5} />
             Previous
@@ -202,7 +202,7 @@ const QuizTakePage = () => {
             <button
               onClick={handleSubmitQuiz}
               disabled={submitting || answeredCount < quiz.questions.length}
-              className="group relative px-8 h-12 bg-linear-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold rounded-xl overflow-hidden transition-all duration-200 shadow-lg shadow-emerald-500/25 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group relative w-full sm:w-auto px-8 h-12 bg-linear-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold rounded-xl overflow-hidden transition-all duration-200 shadow-lg shadow-emerald-500/25 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span className="relative z-10 flex items-center justify-center gap-2">
                 {submitting ? (
@@ -223,7 +223,7 @@ const QuizTakePage = () => {
             <button
               onClick={handleNextQuestion}
               disabled={!isAnswered || submitting}
-              className="group flex items-center gap-2 px-6 h-11 bg-emerald-500 hover:bg-emerald-600 text-white font-medium rounded-xl transition-all duration-200 shadow-md shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
+              className="group flex w-full sm:w-auto items-center justify-center gap-2 px-6 h-11 bg-emerald-500 hover:bg-emerald-600 text-white font-medium rounded-xl transition-all duration-200 shadow-md shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
             >
               Next
               <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-200" strokeWidth={2.5} />
@@ -234,7 +234,7 @@ const QuizTakePage = () => {
         {/* Question Navigation Dots */}
         <div className="mt-8 flex items-center justify-center gap-2 flex-wrap">
           {quiz.questions.map((_, index) => {
-            const isAnsweredQuestion = selectedAnswers.hasOwnProperty(quiz.questions[index]._id);
+            const isAnsweredQuestion = Object.prototype.hasOwnProperty.call(selectedAnswers, quiz.questions[index]._id);
             const isCurrent = index === currentQuestionIndex;
 
             return (

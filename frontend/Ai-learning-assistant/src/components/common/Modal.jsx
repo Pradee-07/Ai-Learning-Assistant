@@ -6,13 +6,13 @@ const Modal = ({ isOpen, onClose, title, children }) => {
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex items-center justify-center min-h-screen px-4 py-8">
+      <div className="flex min-h-screen items-center justify-center px-3 py-6 sm:px-4 sm:py-8">
         <div 
           className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity"
           onClick={onClose}
         ></div>
 
-        <div className="relative w-full max-w-lg bg-white/95 backdrop-blur-xl border border-slate-200/60 rounded-3xl shadow-2xl p-6">
+        <div className="relative w-full max-w-lg max-h-[calc(100vh-3rem)] overflow-y-auto bg-white/95 backdrop-blur-xl border border-slate-200/60 rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6">
           <button
             onClick={onClose}
             className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
