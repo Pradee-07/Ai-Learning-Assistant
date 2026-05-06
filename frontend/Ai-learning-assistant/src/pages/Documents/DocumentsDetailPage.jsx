@@ -81,14 +81,12 @@ const DocumentDetailPage = () => {
           </a>
         </div>
         <div className="bg-gray-100 p-1">
+          {/* ✅ UPDATED: Using Google Docs Viewer to bypass browser PDF bugs */}
           <iframe
-            src={pdfUrl}
+            src={`https://docs.google.com/gview?url=${encodeURIComponent(pdfUrl)}&embedded=true`}
             className="w-full h-[70vh] bg-white rounded border border-gray-200"
             title="PDF Viewer"
             frameBorder="0"
-            style={{
-              colorScheme: 'light',
-            }}
           />
         </div>
       </div>

@@ -26,7 +26,10 @@ const app = express();
 connectDB();
 
 // Middleware to handle CORS
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || "http://localhost:3000,http://localhost:5173").split(',');
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "http://localhost:3000,http://localhost:5173")
+  .split(',')
+  .map(origin => origin.trim());
+
 
 app.use(
   cors({
@@ -34,10 +37,11 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.error('❌ CORS rejected origin:', origin);
         callback(new Error('Not allowed by CORS'));
       }
     },
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })

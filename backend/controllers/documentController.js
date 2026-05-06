@@ -85,11 +85,23 @@ export const uploadDocument = async (req, res, next) => {
       data: document
     });
 
-  } catch (error) {
-    console.error("❌ Upload error:", error);
-    next(error);
+    
+} catch (error) {
+    // 🚨 ADD THIS CONSOLE.LOG TO SEE THE REAL ERROR
+    console.error("🚨 UPLOAD CRASHED:", error);
+    
+    res.status(500).json({ 
+      success: false, 
+      error: error.message || "Internal Server Error",
+      statusCode: 500 
+    });
   }
 };
+//   } catch (error) {
+//     console.error("❌ Upload error:", error);
+//     next(error);
+//   }
+// };
 
 // =======================
 // Process PDF
