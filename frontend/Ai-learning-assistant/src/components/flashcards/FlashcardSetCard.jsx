@@ -1,9 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, Sparkles, TrendingUp } from "lucide-react";
+import { BookOpen, Sparkles, Trash2, TrendingUp } from "lucide-react";
 import moment from "moment";
 
-const FlashcardSetCard = ({ flashcardSet }) => {
+const FlashcardSetCard = ({ flashcardSet, onDelete }) => {
   const navigate = useNavigate();
   const documentRef = flashcardSet.documentId || flashcardSet.document;
   const documentId = typeof documentRef === "object" ? documentRef?._id : documentRef;
@@ -24,6 +24,18 @@ const FlashcardSetCard = ({ flashcardSet }) => {
       className="group relative bg-white/80 backdrop-blur-xl border-2 border-slate-200 hover:border-emerald-300 rounded-2xl p-4 sm:p-6 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/10 cursor-pointer flex flex-col h-full"
       onClick={handleStudyNow}
     >
+      {onDelete && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(flashcardSet);
+          }}
+          className="absolute top-4 right-4 z-10 p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-200"
+        >
+          <Trash2 className="w-4 h-4" strokeWidth={2} />
+        </button>
+      )}
+
       <div className="space-y-4 flex-1">
         {/* Icon and Title */}
         <div className="flex items-start gap-3 sm:gap-4">
