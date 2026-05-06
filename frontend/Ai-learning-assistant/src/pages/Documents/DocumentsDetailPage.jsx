@@ -36,15 +36,22 @@ const DocumentDetailPage = () => {
 
   // Helper function to get the full PDF URL
   const getPdfUrl = () => {
-    if (!document?.data?.filePath) return null;
+    if (!document?.data?.filePath) {
+      console.error('No filePath found in document:', document);
+      return null;
+    }
 
     const filePath = document.data.filePath;
+    console.log('✅ File Path from DB:', filePath);
 
-    // If already full URL, return as-is
+    // If already full URL (Cloudinary), return as-is
     if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
+      console.log('✅ Using Cloudinary URL:', filePath);
       return filePath;
     }
 
+    // Fallback for local paths
+    console.log('⚠️ Local path, using BASE_URL:', BASE_URL);
     return `${BASE_URL}${filePath.startsWith('/') ? '' : '/'}${filePath}`;
   };
 

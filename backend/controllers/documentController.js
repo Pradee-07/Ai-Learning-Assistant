@@ -3,162 +3,138 @@ import Flashcard from '../models/Flashcard.js';
 import Quiz from '../models/Quiz.js';
 import { extractTextFromPDF } from '../utils/pdfParser.js';
 import { chunkText } from '../utils/textChunker.js';
-import fs from 'fs/promises';
 import mongoose from 'mongoose';
+import cloudinary from '../config/cloudinaryconfig.js';
+import streamifier from 'streamifier';
 
-// @desc    Upload PDF document
-// @route   POST /api/documents/upload
-// @access  Private
+// Upload buffer → Cloudinary
+const uploadToCloudinary = (buffer, filename) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder: 'ai-learning-documents',
+        resource_type: 'raw',
+        public_id: `${Date.now()}-${filename.split('.')[0]}`,
+        type: 'upload'
+      },
+      (error, result) => {
+        if (error) {
+          console.error('Cloudinary upload error:', error);
+          reject(error);
+        } else {
+          console.log('Cloudinary upload success:', result.secure_url);
+          resolve(result);
+        }
+      }
+    );
+
+    streamifier.createReadStream(buffer).pipe(stream);
+  });
+};
+
+// =======================
+// Upload Document
+// =======================
 export const uploadDocument = async (req, res, next) => {
   try {
+    console.log("📤 Uploading document... FILE BUFFER:", !!req.file?.buffer);
+
     if (!req.file) {
-      return res.status(400).json({ 
-        success: false,
-        error: 'Please upload a PDF file',
-        statusCode: 400
-    });
-    }
-
-const { title } = req.body;
-
-    // 2. Validate title
-    if (!title) {
-      // Delete uploaded file if no title provided to save storage
-      await fs.unlink(req.file.path);
       return res.status(400).json({
         success: false,
-        error: 'Please provide a document title',
-        statusCode: 400
+        error: 'Please upload a PDF file'
       });
     }
 
-    // 3. Construct the URL for the uploaded file
-    const baseUrl = `http://localhost:${process.env.PORT || 8000}`;
-    const fileUrl = `${baseUrl}/uploads/documents/${req.file.filename}`;
+    const { title } = req.body;
 
-    // 4. Create document record in MongoDB
+    if (!title) {
+      return res.status(400).json({
+        success: false,
+        error: 'Please provide a document title'
+      });
+    }
+
+    // Upload to Cloudinary
+    console.log("🚀 Uploading to Cloudinary...");
+    const cloudinaryResult = await uploadToCloudinary(
+      req.file.buffer,
+      req.file.originalname
+    );
+
+    console.log("✅ Cloudinary URL stored:", cloudinaryResult.secure_url);
+
+    // Save in DB with Cloudinary URL
     const document = await Document.create({
       userId: req.user._id,
       title,
       fileName: req.file.originalname,
-      filePath: fileUrl, // Store the URL instead of the local path for the frontend
+      filePath: cloudinaryResult.secure_url,  // ✅ Store Cloudinary URL
+      cloudinaryId: cloudinaryResult.public_id, // ✅ Store for future deletion
       fileSize: req.file.size,
       status: 'processing'
     });
 
-    // 5. Process PDF in background (Text extraction & Chunking)
-    // In production, you would use a queue like Bull or RabbitMQ here
-    processPDF(document._id, req.file.path).catch(err => {
-      console.error('PDF processing error:', err);
-    });
+    console.log("💾 Document saved to DB with filePath:", document.filePath);
 
-    // 6. Respond immediately to the user
+    // Process PDF in background
+    processPDF(document._id, req.file.buffer).catch(console.error);
+
     res.status(201).json({
       success: true,
-      data: document,
-      message: 'Document uploaded successfully. Processing in progress...'
+      data: document
     });
 
   } catch (error) {
-    // Clean up file on error
-    if (req.file) {
-      await fs.unlink(req.file.path).catch(() => {});
-    }
+    console.error("❌ Upload error:", error);
     next(error);
   }
 };
 
-//helper fn
-
-export const processPDF = async (documentId, filePath) => {
+// =======================
+// Process PDF
+// =======================
+export const processPDF = async (documentId, pdfBuffer) => {
   try {
-    // 1. Extract text from the PDF file
-    const { text } = await extractTextFromPDF(filePath);
-
-    // 2. Create chunks (500 words per chunk with 50-word overlap)
+    const { text } = await extractTextFromPDF(pdfBuffer);
     const chunks = chunkText(text, 500, 50);
 
-    // 3. Update document with extracted data and set status to 'ready'
     await Document.findByIdAndUpdate(documentId, {
       extractedText: text,
-      chunks: chunks,
+      chunks,
       status: 'ready'
     });
 
-    console.log(`Document ${documentId} processed successfully`);
   } catch (error) {
-    console.error(`Error processing document ${documentId}:`, error);
+    console.error(error);
 
-    // 4. Update status to 'failed' so the frontend can show an error state
     await Document.findByIdAndUpdate(documentId, {
       status: 'failed'
     });
   }
 };
 
-// @desc    Get all user documents
-// @route   GET /api/documents
-// @access  Private
+// =======================
+// Get Documents
+// =======================
 export const getDocuments = async (req, res, next) => {
   try {
-    const documents = await Document.aggregate([
-      {
-        // 1. Only get documents belonging to the logged-in user
-        $match: { userId: new mongoose.Types.ObjectId(req.user._id) }
-      },
-      {
-        // 2. Look up related Flashcards
-        $lookup: {
-          from: 'flashcards', // collection name in MongoDB
-          localField: '_id',
-          foreignField: 'documentId',
-          as: 'flashcardSets'
-        }
-      },
-      {
-        // 3. Look up related Quizzes
-        $lookup: {
-          from: 'quizzes', // collection name in MongoDB
-          localField: '_id',
-          foreignField: 'documentId',
-          as: 'quizzes'
-        }
-      },
-      {
-        // 4. Calculate the size (count) of the study material arrays
-        $addFields: {
-          flashcardCount: { $size: '$flashcardSets' },
-          quizCount: { $size: '$quizzes' }
-        }
-      },
-      {
-        // 5. Project (Select) only needed fields to keep the response light
-        $project: {
-          extractedText: 0, // Exclude heavy text
-          chunks: 0,        // Exclude heavy chunks
-          flashcardSets: 0, // Exclude the raw flashcard data
-          quizzes: 0        // Exclude the raw quiz data
-        }
-      },
-      {
-        // 6. Sort by most recent upload
-        $sort: { uploadDate: -1 }
-      }
-    ]);
+    const documents = await Document.find({ userId: req.user._id })
+      .sort({ createdAt: -1 });
 
-    res.status(200).json({
+    res.json({
       success: true,
-      count: documents.length,
       data: documents
     });
+
   } catch (error) {
     next(error);
   }
 };
 
-// @desc    Get single document with chunks
-// @route   GET /api/documents/:id
-// @access  Private
+// =======================
+// Get Single Document
+// =======================
 export const getDocument = async (req, res, next) => {
   try {
     const document = await Document.findOne({
@@ -167,35 +143,25 @@ export const getDocument = async (req, res, next) => {
     });
 
     if (!document) {
-      return res.status(404).json(
-        { success: false, 
-          error: 'Document not found',
-        statusCode: 404
-        });
+      return res.status(404).json({
+        success: false,
+        error: 'Document not found'
+      });
     }
 
-    const flashcardCount = await Flashcard.countDocuments({ documentId: document._id,userId: req.user._id});
-    const quizCount = await Quiz.countDocuments({ documentId: document._id,userId: req.user._id});
-    
-    document.lastAccessed = Date.now();
-    await document.save();
-
-    const documentData = document.toObject();
-    documentData.flashcardCount = flashcardCount;
-    documentData.quizCount =quizCount;
-
-    res.status(200).json({
+    res.json({
       success: true,
-      data: documentData
+      data: document
     });
+
   } catch (error) {
     next(error);
   }
 };
 
-// @desc    Delete document
-// @route   DELETE /api/documents/:id
-// @access  Private
+// =======================
+// Delete Document
+// =======================
 export const deleteDocument = async (req, res, next) => {
   try {
     const document = await Document.findOne({
@@ -204,56 +170,50 @@ export const deleteDocument = async (req, res, next) => {
     });
 
     if (!document) {
-      return res.status(404).json(
-        { success: false, 
-          error: 'Document not found',
-        statusCode: 404
-        });
+      return res.status(404).json({
+        success: false,
+        error: 'Document not found'
+      });
     }
 
-    // 1. Delete physical file from 'uploads' folder
-    await fs.unlink(document.filePath).catch(() => {});
+    // Delete from Cloudinary
+    if (document.cloudinaryId) {
+      await cloudinary.uploader.destroy(document.cloudinaryId, {
+        resource_type: 'raw'
+      });
+    }
 
-    // 2. Delete related AI data (Quizzes and Flashcards)
     await Quiz.deleteMany({ documentId: document._id });
     await Flashcard.deleteMany({ documentId: document._id });
 
-    // 3. Remove document record
     await document.deleteOne();
 
-    res.status(200).json({
+    res.json({
       success: true,
-      message: 'Document and related data deleted'
+      message: 'Deleted successfully'
     });
+
   } catch (error) {
     next(error);
   }
 };
 
-// @desc    Update document title
-// @route   PUT /api/documents/:id
-// @access  Private
+// =======================
+// Update Document
+// =======================
 export const updateDocument = async (req, res, next) => {
   try {
-    let document = await Document.findOne({
-      _id: req.params.id,
-      userId: req.user._id
-    });
-
-    if (!document) {
-      return res.status(404).json({ success: false, error: 'Document not found' });
-    }
-
-    document = await Document.findByIdAndUpdate(
-      req.params.id,
+    const document = await Document.findOneAndUpdate(
+      { _id: req.params.id, userId: req.user._id },
       { title: req.body.title },
-      { new: true, runValidators: true }
+      { new: true }
     );
 
-    res.status(200).json({
+    res.json({
       success: true,
       data: document
     });
+
   } catch (error) {
     next(error);
   }

@@ -1,28 +1,18 @@
 import multer from 'multer';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import fs from 'fs';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import cloudinary from '../config/cloudinary.js';
 import { UPLOAD_LIMITS } from './uploadConstants.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Ensure upload directory exists
-const uploadDir = path.join(__dirname, '../uploads/documents');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-// Configure storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
+// Configure Cloudinary storage
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: async (req, file) => {
+    return {
+      folder: 'documents',
+      resource_type: 'raw', // IMPORTANT for PDFs
+      public_id: `${Date.now()}-${file.originalname}`,
+    };
   },
-  filename: (req, file, cb) => {
-    // Create a unique filename: timestamp-random-originalName
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, `${uniqueSuffix}-${file.originalname}`);
-  }
 });
 
 // File filter - only PDFs allowed
@@ -36,11 +26,11 @@ const fileFilter = (req, file, cb) => {
 
 // Configure multer
 const upload = multer({
-  storage: storage,
-  fileFilter: fileFilter,
+  storage,
+  fileFilter,
   limits: {
-    fileSize: UPLOAD_LIMITS.MAX_FILE_SIZE_BYTES
-  }
+    fileSize: UPLOAD_LIMITS.MAX_FILE_SIZE_BYTES,
+  },
 });
 
 export default upload;
