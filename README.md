@@ -1,6 +1,6 @@
 # AI Learning Assistant
 
-An intelligent learning platform powered by Google Gemini AI that helps students and professionals learn from documents more effectively.
+An intelligent learning platform powered by Google Gemini AI that helps students and professionals learn from documents more effectively.A full-stack, AI-powered educational platform designed to transform static study materials into interactive learning experiences. By uploading a document, users can automatically generate flashcards, take intelligent quizzes, and chat directly with their study materials using Google's Gemini AI.
 
 ## Features
 
@@ -11,21 +11,44 @@ An intelligent learning platform powered by Google Gemini AI that helps students
 - 📊 **Progress Tracking**: Track your learning progress
 - 🎨 **Beautiful UI**: Modern, responsive interface built with React and Tailwind CSS
 
-## Tech Stack
 
-### Backend
-- **Runtime**: Node.js with Express
-- **Database**: MongoDB
-- **Authentication**: JWT
-- **File Processing**: PDF parsing and chunking
-- **AI**: Google Gemini API
+## 📦 Tech Stack & Package Deep Dive
 
-### Frontend
-- **Framework**: React 19
-- **Build Tool**: Vite
-- **Styling**: Tailwind CSS
-- **HTTP Client**: Axios
-- **UI Components**: Lucide React
+A deliberate choice of libraries was made to balance performance, developer experience, and UI quality. Here is exactly what powers this app and why:
+
+### Frontend (React + Vite)
+*   **`react` / `react-dom`:** The core UI library used to build the single-page application using reusable components and state hooks (`useState`, `useEffect`).
+*   **`react-router-dom`:** Enables seamless, client-side routing (e.g., navigating from `/dashboard` to `/quizzes/:id` without reloading the page).
+*   **`axios`:** A promise-based HTTP client. Used instead of `fetch` for its automatic JSON parsing, request interceptors (for attaching JWT tokens), and easier error handling.
+*   **`tailwindcss`:** A utility-first CSS framework. Used to rapidly build the custom "glassmorphism" design, responsive grids, and complex UI states (hover, focus, disabled) without writing external CSS files.
+*   **`lucide-react`:** Provides clean, consistent, and customizable SVG icons (e.g., `BookOpen`, `Trash2`, `Eye`) that scale perfectly with Tailwind text sizes.
+*   **`react-hot-toast`:** Replaces ugly browser alerts with beautiful, non-blocking popup notifications for API success/error states, improving the UX.
+*   **`moment`:** Used for easy date and time formatting (e.g., converting a MongoDB timestamp into "Created 2 hours ago").
+*   **`vite`:** Chosen over Create React App (CRA) for its blazing-fast Hot Module Replacement (HMR) and highly optimized production builds.
+
+### Backend (Node.js + Express)
+*   **`express`:** The minimalist web framework used to handle routing, HTTP requests, and middleware setup.
+*   **`mongoose`:** An ODM for MongoDB. Crucial for defining strict schemas for our dynamic AI data (Users, Documents, Quizzes, Flashcards) and managing relationships (e.g., linking a Quiz to a specific Document ID).
+*   **`@google/genai`:** The official SDK used to communicate with Google's Gemini models (`gemini-2.5-pro` / `gemini-1.5-flash`), responsible for generating the educational content.
+*   **`jsonwebtoken` (JWT):** Used to create stateless, secure authentication tokens. Once a user logs in, this token is sent back and forth to verify identity without querying the database every time.
+*   **`bcryptjs`:** A cryptographic library used to hash user passwords *before* they are saved to the database, ensuring security even if the database is compromised.
+*   **`multer`:** Middleware used to handle `multipart/form-data`. Specifically used to intercept, validate, and save PDF and text file uploads from the frontend.
+*   **`pdf-parse`:** A library that reads uploaded PDF files and extracts the raw text so it can be fed into the Gemini AI prompt.
+*   **`nodemailer`:** Used to connect to SMTP servers (like Gmail) to send One-Time Passwords (OTPs) to users for email verification and password resets.
+*   **`cors`:** Middleware that allows our frontend (running on one port/domain) to securely make requests to our backend API (running on another).
+*   **`dotenv`:** Loads environment variables from a `.env` file into `process.env`, keeping API keys and database passwords out of the source code.
+
+## 🚀 What Has Been Built
+
+This project is a complete MERN-stack application featuring a complex integration with large language models (LLMs). The core accomplishments include:
+
+- **Secure Authentication System:** Full user registration, login, profile management, and password changing secured via JWT and bcrypt. (Includes OTP email verification architecture).
+- **Document Processing:** Ability to upload PDF and text documents, parse the raw text on the backend, and store it securely.
+- **Prompt Engineering & AI Integration:** Custom backend logic that wraps user documents in strict system prompts, forcing the Google Gemini API to return predictable, structured JSON data for educational tools.
+- **Dynamic Quiz Engine:** An interactive quiz-taking UI that tracks scores, highlights correct/incorrect answers, and provides AI-generated explanations for every question.
+- **Spaced Repetition Flashcards:** A beautifully styled flashcard interface allowing users to study, flip cards, track their review progress, and star important concepts.
+- **Contextual AI Chat:** A chat interface where users can ask questions specifically about the document they uploaded, preventing AI hallucinations.
+- **Premium Glassmorphism UI:** A fully responsive, modern frontend built with Tailwind CSS, featuring smooth animations, hover states, and intuitive modal interactions.
 
 ## Getting Started
 
@@ -34,6 +57,11 @@ An intelligent learning platform powered by Google Gemini AI that helps students
 - npm or yarn
 - MongoDB account
 - Google Gemini API key
+
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd AI_learning_assistant
 
 ### Installation
 
@@ -153,12 +181,12 @@ JWT_SECRET=your-secret-key
 JWT_EXPIRE=7d
 MAX_FILE_SIZE=10485760
 GEMINI_API_KEY=your-api-key
-ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
+ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173,frontend url(in deplopment)
 ```
 
 ### Frontend (.env.development)
 ```
-VITE_API_BASE_URL=http://localhost:8000
+VITE_API_BASE_URL=http://localhost:8000,backend url(in deplopment)
 VITE_APP_NAME=AI Learning Assistant
 VITE_MAX_FILE_SIZE=10485760
 ```
@@ -213,14 +241,6 @@ VITE_MAX_FILE_SIZE=10485760
 ### ChatHistory Model
 - `documentId`, `userId`, `messages`, `createdAt`, `updatedAt`
 
-## Deployment
-
-For production deployment, see [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)
-
-### Quick Deployment Options
-- **Backend**: Heroku, Railway, Render, AWS
-- **Frontend**: Vercel, Netlify, AWS S3 + CloudFront
-
 ## Security
 
 - JWT-based authentication
@@ -239,31 +259,8 @@ For production deployment, see [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)
 - CDN support
 - Lazy loading of components
 
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Push to the branch
-5. Create a Pull Request
-
 ## License
 
 This project is licensed under the ISC License
 
-## Support
 
-For issues and questions, please create an issue in the repository.
-
-## Roadmap
-
-- [ ] Mobile app (React Native)
-- [ ] Real-time collaboration
-- [ ] Advanced analytics
-- [ ] Multiple language support
-- [ ] Custom learning paths
-- [ ] Integration with calendar/scheduling
-
----
-
-**Last Updated**: May 2026
