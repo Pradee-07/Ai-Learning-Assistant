@@ -185,6 +185,7 @@ VITE_MAX_FILE_SIZE=10485760
 - `DELETE /api/flashcards/:id` - Delete flashcard set
 
 ### Quizzes
+- `GET /api/quizzes` - Get all quizzes for the authenticated user
 - `GET /api/quizzes/:documentId` - Get quizzes for document
 - `POST /api/ai/generate-quiz` - Generate quiz
 - `POST /api/quizzes/:id/submit` - Submit quiz answers

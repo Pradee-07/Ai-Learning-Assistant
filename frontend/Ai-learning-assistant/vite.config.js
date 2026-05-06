@@ -15,10 +15,17 @@ export default defineConfig({
     minify: 'terser',
     rollupOptions: {
       output: {
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'ui-vendor': ['lucide-react', 'react-hot-toast'],
-          'markdown-vendor': ['react-markdown', 'react-syntax-highlighter'],
+        rollupOptions: {
+          output: {
+            manualChunks(id) {
+              if (id.includes('node_modules')) {
+                if (id.includes('react')) return 'react-vendor';
+                if (id.includes('lucide-react') || id.includes('react-hot-toast')) return 'ui-vendor';
+                if (id.includes('react-markdown') || id.includes('react-syntax-highlighter')) return 'markdown-vendor';
+                return 'vendor';
+              }
+            }
+          }
         }
       }
     },
