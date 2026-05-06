@@ -10,6 +10,7 @@ import ChatInterface from '../../components/Chat/ChatInterface';
 import AIActions from '../../components/ai/AIActions';
 import FlashcardManager from '../../components/flashcards/FlashCardManager';
 import QuizManager from '../../components/quizzes/QuizManager';
+import { BASE_URL } from '../../utils/apiPaths';
 
 const DocumentDetailPage = () => {
   const { id } = useParams();
@@ -36,15 +37,15 @@ const DocumentDetailPage = () => {
   // Helper function to get the full PDF URL
   const getPdfUrl = () => {
     if (!document?.data?.filePath) return null;
-    
+
     const filePath = document.data.filePath;
-    
+
+    // If already full URL, return as-is
     if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
       return filePath;
     }
-    
-    const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
-    return `${baseUrl}${filePath.startsWith('/') ? '' : '/'}${filePath}`;
+
+    return `${BASE_URL}${filePath.startsWith('/') ? '' : '/'}${filePath}`;
   };
 
   const renderContent = () => {
