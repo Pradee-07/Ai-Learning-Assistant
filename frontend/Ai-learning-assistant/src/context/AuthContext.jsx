@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import authService from "../services/authService";
 
 const AuthContext = createContext();
 
@@ -24,11 +25,15 @@ export const AuthProvider = ({ children }) => {
       const token = localStorage.getItem('token');
       const userStr = localStorage.getItem('user');
 
-      if (token && userStr) {
-        const userData = JSON.parse(userStr);
-        setUser(userData);
-        setIsAuthenticated(true);
+      if (!token || !userStr) {
+        setLoading(false);
+        return;
       }
+
+      // Verify token with server by calling getProfile
+      const userData = await authService.getProfile();
+      setUser(userData.user);
+      setIsAuthenticated(true);
     } catch (error) {
       console.error('Auth check failed:', error);
       logout();
