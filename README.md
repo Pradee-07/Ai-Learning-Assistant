@@ -34,7 +34,6 @@ A deliberate choice of libraries was made to balance performance, developer expe
 *   **`bcryptjs`:** A cryptographic library used to hash user passwords *before* they are saved to the database, ensuring security even if the database is compromised.
 *   **`multer`:** Middleware used to handle `multipart/form-data`. Specifically used to intercept, validate, and save PDF and text file uploads from the frontend.
 *   **`pdf-parse`:** A library that reads uploaded PDF files and extracts the raw text so it can be fed into the Gemini AI prompt.
-*   **`nodemailer`:** Used to connect to SMTP servers (like Gmail) to send One-Time Passwords (OTPs) to users for email verification and password resets.
 *   **`cors`:** Middleware that allows our frontend (running on one port/domain) to securely make requests to our backend API (running on another).
 *   **`dotenv`:** Loads environment variables from a `.env` file into `process.env`, keeping API keys and database passwords out of the source code.
 
@@ -42,7 +41,7 @@ A deliberate choice of libraries was made to balance performance, developer expe
 
 This project is a complete MERN-stack application featuring a complex integration with large language models (LLMs). The core accomplishments include:
 
-- **Secure Authentication System:** Full user registration, login, profile management, and password changing secured via JWT and bcrypt. (Includes OTP email verification architecture).
+- **Secure Authentication System:** Full user registration, login, profile management, and password changing secured via JWT and bcrypt.
 - **Document Processing:** Ability to upload PDF and text documents, parse the raw text on the backend, and store it securely.
 - **Prompt Engineering & AI Integration:** Custom backend logic that wraps user documents in strict system prompts, forcing the Google Gemini API to return predictable, structured JSON data for educational tools.
 - **Dynamic Quiz Engine:** An interactive quiz-taking UI that tracks scores, highlights correct/incorrect answers, and provides AI-generated explanations for every question.
