@@ -35,8 +35,20 @@ const documentSchema = new mongoose.Schema({
     content: {
       type: String,
       required: true
+    },
+    chunkIndex: {
+      type: Number,
+      required: true
+    },
+    pageNumber: {
+      type: Number,
+      default: 0
     }
   }],
+  processingError: {
+    type: String,
+    default: ''
+  },
   uploadDate: {
     type: Date,
     default: Date.now

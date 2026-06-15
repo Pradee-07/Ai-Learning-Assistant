@@ -108,20 +108,36 @@ export const uploadDocument = async (req, res, next) => {
 // =======================
 export const processPDF = async (documentId, pdfBuffer) => {
   try {
+    console.log(`Processing PDF for document ${documentId}. Size: ${pdfBuffer?.length || 0} bytes`);
+
     const { text } = await extractTextFromPDF(pdfBuffer);
+    const cleanText = text?.trim() || '';
+
+    if (!cleanText) {
+      throw new Error('No selectable text found in PDF. Scanned/image-only PDFs need OCR before chunking.');
+    }
+
     const chunks = chunkText(text, 500, 50);
+
+    if (chunks.length === 0) {
+      throw new Error('PDF text was extracted, but no chunks were created.');
+    }
 
     await Document.findByIdAndUpdate(documentId, {
       extractedText: text,
       chunks,
-      status: 'ready'
+      status: 'ready',
+      processingError: ''
     });
 
+    console.log(`PDF processed for document ${documentId}. Chunks: ${chunks.length}`);
+
   } catch (error) {
-    console.error(error);
+    console.error(`PDF processing failed for document ${documentId}:`, error);
 
     await Document.findByIdAndUpdate(documentId, {
-      status: 'failed'
+      status: 'failed',
+      processingError: error.message || 'Unknown PDF processing error'
     });
   }
 };
